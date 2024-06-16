@@ -98,17 +98,48 @@ const V2ELEVATORCMD = {
 
 const HEMSELEM = ["electric", "water", "hotwater", "gas", "heat"];
 
+// camblin patch02: support energy grid in homeassistant
 const HEMSUNIT = {
-    "electric_total": ["kWh", "energy", "{{ (value | float / 100) }}"],
-    "electric_realt": ["W", "power"],
-    "water_total": ["m³", "water", "{{ (value | float / 1000) | round(2) }}"],
-    "water_realt": [["m³/h", ""], ["m³/h", "{{ (value | float / 1000) }}"]],
-    "hotwater_total": ["m³", "", "{{ (value | float / 1000) | round(2) }}"],
-    "hotwater_realt": [["m³/h", ""], ["m³/h", "{{ (value | float / 1000) }}"]],
-    "gas_total": ["m³", "gas", "{{ (value | float / 1000) | round(2) }}"],
-    "gas_realt": [["m³/h", ""], ["m³/h", "{{ (value | float / 10) }}"]],
-    "heat_total": ["m³", "", "{{ (value | float / 1000) | round(2) }}"],
-    "heat_realt": [["m³/h", ""], ["m³/h", "{{ (value | float / 1000) }}"]],
+    "electric_total": [
+        ["kWh", "energy", "{{ (value | float / 100) }}"], 
+        ["kWh", "energy", "{{ (value | float / 100) }}"]
+    ],
+    "electric_realt": [
+        ["W", "power"],
+        ["W", "power"]
+    ],
+    "water_total": [
+        ["m³", "water", "{{ (value | float / 1000) | round(2) }}"],
+        ["m³", "water", "{{ (value | float / 1000) | round(2) }}"]
+    ],
+    "water_realt": [
+        ["m³/h", "water"], 
+        ["m³/h", "water", "{{ (value | float / 1000) }}"]
+    ],
+    "hotwater_total": [
+        ["m³", "", "{{ (value | float / 1000) | round(2) }}"],
+        ["m³", "", "{{ (value | float / 1000) | round(2) }}"],
+    ],
+    "hotwater_realt": [
+        ["m³/h", ""], 
+        ["m³/h", "{{ (value | float / 1000) }}"]
+    ],
+    "gas_total": [
+        ["m³", "gas", "{{ (value | float / 1000) | round(2) }}"],
+        ["m³", "gas", "{{ (value | float / 1000) | round(2) }}"],
+    ],
+    "gas_realt": [
+        ["m³/h", "gas"], 
+        ["m³/h", "gas", "{{ (value | float / 10) }}"]
+    ],
+    "heat_total": [
+        ["m³", "", "{{ (value | float / 1000) | round(2) }}"],
+        ["m³", "", "{{ (value | float / 1000) | round(2) }}"],
+    ],
+    "heat_realt": [
+        ["m³/h", ""], 
+        ["m³/h", "{{ (value | float / 1000) }}"]
+    ],
 }
 
 // Total energy usage
@@ -196,6 +227,14 @@ const DISCOVERY_PAYLOAD = {
         "cmd_t": "~/command",
         "stat_t": "~/state",
         "ic": "mdi:gas-cylinder",
+    }],
+    "doorlock": [{
+        "_intg": "switch",
+        "~": "{0}/doorlock/{1}/{2}",
+        "name": "{0}_doorlock",
+        "cmd_t": "~/command",
+        "stat_t": "~/state",
+        "ic": "mdi:lock",
     }],
     "fan": [{
         "_intg": "fan",

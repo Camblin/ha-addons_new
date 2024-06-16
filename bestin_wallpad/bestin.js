@@ -374,7 +374,16 @@ class BestinRS485 {
                 }
 
                 payload['unit_of_meas'] = measurementUnit[0];
-                if (measurementUnit[1]) payload['dev_cla'] = measurementUnit[1];
+                // camblin patch02: support energy grid in homeassistant
+                if (measurementUnit[1]) {
+                    if( measurementUnit[1] == "energy")
+                        payload['stat_cla'] = 'total';
+                    else if( measurementUnit[1] == "gas")
+                        payload['stat_cla'] = 'gas';
+                    else if( measurementUnit[1] == "water")
+                        payload['stat_cla'] = 'water';
+                    payload['dev_cla'] = measurementUnit[1];
+                }
                 if (measurementUnit[2]) payload['val_tpl'] = measurementUnit[2];
             }
 
@@ -536,8 +545,9 @@ class BestinRS485 {
         const { receivedMessages } = this;
         const codeHex = Buffer.from(packet);
 
-        const found = receivedMessages.find(({ codeHex: existingCodeHex }) => existingCodeHex.equals(codeHex));
-        if (found) return found;
+        // camblin patch01: memory leak. there are no pop method about this. 
+        //const found = receivedMessages.find(({ codeHex: existingCodeHex }) => existingCodeHex.equals(codeHex));
+        //if (found) return found;
 
         const code = codeHex.toString('hex');
         const expectLength = packet[2] === packet.length ? 4 : 3;
@@ -559,7 +569,8 @@ class BestinRS485 {
             count: 0,
             validMsgInfos,
         };
-        receivedMessages.push(receivedMsg);
+        // camblin patch01: memory leak. there are no pop method about this. 
+        //receivedMessages.push(receivedMsg);
         return receivedMsg;
     }
 
